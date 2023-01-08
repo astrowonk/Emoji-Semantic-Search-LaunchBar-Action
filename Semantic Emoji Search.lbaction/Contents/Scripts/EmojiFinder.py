@@ -22,7 +22,7 @@ class EmojiFinderSql:
         #    'main.db')  #change later, name should have model type in it
         self.all_labels = self.run_sql_to_list(
             'select distinct label from emoji;')
-        self.base_emoji_map = self.make_variant_map()
+        #self.base_emoji_map = self.make_variant_map()
         self.emoji_dict = {
             label: {
                 'emoji': emoji,
