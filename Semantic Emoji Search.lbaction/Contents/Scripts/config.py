@@ -10,5 +10,5 @@ SKIN_TONE_SUFFIXES = [
 
 #### configure these to prioritize certain skin tones or genders to top of search results
 
-gender_priority = 'man'
-skin_tone_priority = 'medium_skin_tone'
+gender_priority = None
+skin_tone_priority = None
