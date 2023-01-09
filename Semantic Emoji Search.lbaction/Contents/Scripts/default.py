@@ -39,9 +39,7 @@ def make_entry(item, skin_tone, gender):
     priority_result = []
     gender_result = []
     if skin_tone:
-        priority_result = [
-            x for x in additional_emojis if x.endswith(skin_tone + ':')
-        ]
+        priority_result = [x for x in additional_emojis if skin_tone in x]
     if gender:
         gender_result = [
             x for x in priority_result or additional_emojis
