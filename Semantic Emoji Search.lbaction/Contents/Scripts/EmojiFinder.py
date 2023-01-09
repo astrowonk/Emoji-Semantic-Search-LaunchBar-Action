@@ -31,7 +31,7 @@ class EmojiFinderSql:
                 "select label,emoji,text from emoji;").fetchall()
         }
         self.map_dict = {
-            i:item
+            i: item
             for i, item in enumerate(
                 ['emoji', 'rank_of_search', 'label', 'text', 'version'])
         }
@@ -57,6 +57,10 @@ class EmojiFinderSql:
                           for base in variants] + [f':woman_{base_search}:']
         person_variants = [':person_' + base[1:]
                            for base in variants] + [f':person_{base_search}:']
+        extra_suffixes = flatten_list(
+            [[f":{gender}_{x}_{base_search}:" for x in SKIN_TONE_SUFFIXES]
+             for gender in ['man', 'woman', 'person']])
+
         return self.filter_list(variants) + self.filter_list(
             woman_variants) + self.filter_list(
                 man_variants) + self.filter_list(person_variants)
@@ -83,6 +87,7 @@ class EmojiFinderSql:
             "select emoji,rank_of_search,label,text,version from combined where word = (?) and version <= 14.0 order by rank_of_search;",
             (search, )).fetchall()
 
-        results = [{self.map_dict[i]: res[i] for i in range(5)} for res in results]
+        results = [{self.map_dict[i]: res[i]
+                    for i in range(5)} for res in results]
 
         return results
