@@ -62,13 +62,12 @@ def make_entry(item, skin_tone, gender):
         }
     final_item = {
         'icon': target['emoji'],
-        'title': target['text'],
+        'title': item['text'],
         'subtitle': target['label'],
         'action': 'copy.py',
         'actionArgument': target['emoji'],
         'actionReturnsItems': False
     }
-
     if additional_emojis:
         children = [{
             'icon': e.emoji_dict[item]['emoji'],
