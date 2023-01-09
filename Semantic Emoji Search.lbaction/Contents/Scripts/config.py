@@ -8,7 +8,7 @@ SKIN_TONE_SUFFIXES = [
     'dark_skin_tone',
 ]
 
-#### configure these to prioritize certain skin tones or genders to top of search results
+#### configure these to prioritize a gender and/or skin tone to top of search results
 
 gender_priority = None
 skin_tone_priority = None
