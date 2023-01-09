@@ -63,7 +63,8 @@ class EmojiFinderSql:
 
         return self.filter_list(variants) + self.filter_list(
             woman_variants) + self.filter_list(
-                man_variants) + self.filter_list(person_variants)
+                man_variants) + self.filter_list(
+                    person_variants) + self.filter_list(extra_suffixes)
 
     @property
     def con(self):
