@@ -1,5 +1,4 @@
 import sqlite3
-#import emoji
 
 SKIN_TONE_SUFFIXES = [
     'medium-light_skin_tone',
@@ -30,6 +29,11 @@ class EmojiFinderSql:
             }
             for label, emoji, text in self.con.execute(
                 "select label,emoji,text from emoji;").fetchall()
+        }
+        self.map_dict = {
+            i:item
+            for i, item in enumerate(
+                ['emoji', 'rank_of_search', 'label', 'text', 'version'])
         }
 
     def run_sql_to_list(self, sql):
@@ -78,4 +82,7 @@ class EmojiFinderSql:
         results = self.con.execute(
             "select emoji,rank_of_search,label,text,version from combined where word = (?) and version <= 14.0 order by rank_of_search;",
             (search, )).fetchall()
+
+        results = [{self.map_dict[i]: res[i] for i in range(5)} for res in results]
+
         return results
