@@ -8,7 +8,8 @@ SKIN_TONE_SUFFIXES = [
     'dark_skin_tone',
 ]
 
-#### configure these to prioritize a gender and/or skin tone to top of search results
+#### configure these to prioritize a skin tone or gender to top of search results
+# for eligible emoji
 
 gender_priority = None
 skin_tone_priority = None
