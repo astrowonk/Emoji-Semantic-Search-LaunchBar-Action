@@ -33,7 +33,7 @@ def make_entry(item, skin_tone, gender):
     #     'actionArgument': item[map_dict['emoji']],
     #     'actionReturnsItems': False
     # }
-    additional_emojis = e.add_variants(item['label'])
+    additional_emojis = e.sql_add_variants(item['label'])
     #  print(additional_emojis)
 
     priority_result = []
@@ -70,11 +70,11 @@ def make_entry(item, skin_tone, gender):
     }
     if additional_emojis:
         children = [{
-            'icon': e.emoji_dict[item]['emoji'],
-            'title': e.emoji_dict[item]['text'],
+            'icon': e.new_emoji_dict2(item)['emoji'],
+            'title': e.new_emoji_dict2(item)['text'],
             'subtitle': item,
             'action': 'copy.py',
-            'actionArgument': e.emoji_dict[item]['emoji'],
+            'actionArgument': e.new_emoji_dict2(item)['emoji'],
             'actionReturnsItems': False
         } for item in additional_emojis]
         final_item.update({'children': children})

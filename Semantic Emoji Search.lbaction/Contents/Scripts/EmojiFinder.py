@@ -19,60 +19,33 @@ class EmojiFinderSql:
         #  print('Begin init of class')
         #self.con = sqlite3.connect(
         #    'main.db')  #change later, name should have model type in it
-        self.all_labels = self.run_sql_to_list(
-            'select distinct label from emoji;')
+
         #self.base_emoji_map = self.make_variant_map()
-        self.emoji_dict = {
-            label: {
-                'emoji': emoji,
-                'text': text
-            }
-            for label, emoji, text in self.con.execute(
-                "select label,emoji,text from emoji;").fetchall()
-        }
+
         self.map_dict = {
             i: item
             for i, item in enumerate(
                 ['emoji', 'rank_of_search', 'label', 'text', 'version'])
         }
 
-    def run_sql_to_list(self, sql):
-        return flatten_list(self.con.execute(sql).fetchall())
-
-    def add_variants(self, base_label):
-        #print(base_label)
-        base_search = base_label[1:-1]
-        if base_search in SKIN_TONE_SUFFIXES:
-            return []
-        for prefix in ['person_', 'man_', 'woman_']:
-            if base_search.startswith(prefix):
-                base_search = base_search.replace(prefix, '')
-                # print(f'new base {base_search}')
-                break
-        variants = [f":{base_search}_{x}:" for x in SKIN_TONE_SUFFIXES]
-        #print(variants)
-        man_variants = [':man_' + base[1:]
-                        for base in variants] + [f':man_{base_search}:']
-        woman_variants = [':woman_' + base[1:]
-                          for base in variants] + [f':woman_{base_search}:']
-        person_variants = [':person_' + base[1:]
-                           for base in variants] + [f':person_{base_search}:']
-        extra_suffixes = flatten_list(
-            [[f":{gender}_{x}_{base_search}:" for x in SKIN_TONE_SUFFIXES]
-             for gender in ['man', 'woman', 'person']])
-
-        return self.filter_list(variants) + self.filter_list(
-            woman_variants) + self.filter_list(
-                man_variants) + self.filter_list(
-                    person_variants) + self.filter_list(extra_suffixes)
+    def run_sql_to_list(self, sql, params=None):
+        if params:
+            return flatten_list(self.con.execute(sql, params).fetchall())
+        else:
+            return flatten_list(self.con.execute(sql).fetchall())
 
     @property
     def con(self):
-        return sqlite3.connect('../Resources/main.db')
+        return sqlite3.connect('../Resources/all-mpnet-base-v2_main.db')
+
+    def sql_add_variants(self, label):
+        return self.run_sql_to_list(
+            "select label from emoji_df where base_emoji = ? and base_emoji <> label",
+            params=(label, ))
 
     def make_variant_map(self):
         no_variants = self.run_sql_to_list(
-            'select distinct word from lookup_emoji;')
+            'select distinct label from lookup;')
         new_dict = {}
         for non_variant in no_variants:
             the_variants = self.add_variants(non_variant)
@@ -82,13 +55,23 @@ class EmojiFinderSql:
     def filter_list(self, list1):
         return sorted(list(set(list1).intersection(self.all_labels)))
 
+    def new_emoji_dict2(self, label):
+        # print(df.shape)
+        # return df
+        return dict(
+            zip(['idx', 'emoji', 'label', 'version', 'text', 'base_emoji'],
+                self.con.execute("Select * from emoji_df where label = ?;",
+                                 (label, )).fetchone()))
+
     def top_emojis(self, search):
         search = search.strip().lower()
         results = self.con.execute(
-            "select emoji,rank_of_search,label,text,version from combined where word = (?) and version <= 14.0 order by rank_of_search;",
+            "select emoji,rank_of_search,label,text,version from combined_emoji where word = ? and version <= 14.0 order by rank_of_search;",
             (search, )).fetchall()
 
-        results = [{self.map_dict[i]: res[i]
-                    for i in range(5)} for res in results]
+        results = [{
+            self.map_dict[i]: res[i]
+            for i in range(5)
+        } for res in results]
 
         return results
