@@ -55,7 +55,7 @@ class EmojiFinderSql:
     def filter_list(self, list1):
         return sorted(list(set(list1).intersection(self.all_labels)))
 
-    def new_emoji_dict2(self, label):
+    def new_emoji_dict(self, label):
         # print(df.shape)
         # return df
         return dict(

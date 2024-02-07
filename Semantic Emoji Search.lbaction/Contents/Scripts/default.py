@@ -56,8 +56,8 @@ def make_entry(item, skin_tone, gender):
         target = item
     if isinstance(target, str):
         target = {
-            'emoji': e.emoji_dict[target]['emoji'],
-            'text': e.emoji_dict[target]['text'],
+            'emoji': e.new_emoji_dict(target)['emoji'],
+            'text': e.new_emoji_dict(target)['text'],
             'label': target
         }
     final_item = {
@@ -70,11 +70,11 @@ def make_entry(item, skin_tone, gender):
     }
     if additional_emojis:
         children = [{
-            'icon': e.new_emoji_dict2(item)['emoji'],
-            'title': e.new_emoji_dict2(item)['text'],
+            'icon': e.new_emoji_dict(item)['emoji'],
+            'title': e.new_emoji_dict(item)['text'],
             'subtitle': item,
             'action': 'copy.py',
-            'actionArgument': e.new_emoji_dict2(item)['emoji'],
+            'actionArgument': e.new_emoji_dict(item)['emoji'],
             'actionReturnsItems': False
         } for item in additional_emojis]
         final_item.update({'children': children})
