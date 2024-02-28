@@ -1,8 +1,5 @@
 #!/usr/local/opt/miniforge3/bin/python
-# #
-# LaunchBar Action Script
-#
-import argparse
+
 import json
 from EmojiFinder import EmojiFinderSql
 try:
@@ -13,20 +10,11 @@ except ImportError:
 from config import gender_priority, skin_tone_priority
 
 items = []
-
-parser = argparse.ArgumentParser()
-parser.add_argument('search')
 # Note: The first argument is the script's path
-
-args = parser.parse_args()
 
 e = EmojiFinderSql()
 if use_duck:
     l = LiveSearch(model_path='../Resources/minilm-v6.gguf')
-
-res = e.top_emojis(args.search)
-if not res and use_duck:
-    res = l.get_emoji(args.search)
 
 
 def make_entry(item, skin_tone, gender):
@@ -38,7 +26,7 @@ def make_entry(item, skin_tone, gender):
     #     'icon': item[map_dict['emoji']],
     #     'title': item[map_dict['text']],
     #     'subtitle': item[map_dict['label']],
-    #     'action': 'copy.py',
+    #     'action': 'copy_emoji.py',
     #     'actionArgument': item[map_dict['emoji']],
     #     'actionReturnsItems': False
     # }
@@ -73,7 +61,7 @@ def make_entry(item, skin_tone, gender):
         'icon': target['emoji'],
         'title': item['text'],
         'subtitle': target['label'],
-        'action': 'copy.py',
+        'action': 'copy_emoji.py',
         'actionArgument': target['emoji'],
         'actionReturnsItems': False
     }
@@ -82,7 +70,7 @@ def make_entry(item, skin_tone, gender):
             'icon': e.new_emoji_dict(item)['emoji'],
             'title': e.new_emoji_dict(item)['text'],
             'subtitle': item,
-            'action': 'copy.py',
+            'action': 'copy_emoji.py',
             'actionArgument': e.new_emoji_dict(item)['emoji'],
             'actionReturnsItems': False
         } for item in additional_emojis]
@@ -90,10 +78,23 @@ def make_entry(item, skin_tone, gender):
     return final_item
 
 
-final_res = []
-for item in res:
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('search', help='some help', nargs="+")
+    args = parser.parse_args()
 
-    final_res.append(
-        make_entry(item, skin_tone=skin_tone_priority, gender=gender_priority))
+    search = ' '.join(args.search).strip()
+    res = e.top_emojis(search)
+    if not res and use_duck:
+        res = l.get_emoji(search)
 
-print(json.dumps(final_res, indent=4))
+    final_res = []
+    for item in res:
+
+        final_res.append(
+            make_entry(item,
+                       skin_tone=skin_tone_priority,
+                       gender=gender_priority))
+
+    print(json.dumps(final_res, indent=4))
