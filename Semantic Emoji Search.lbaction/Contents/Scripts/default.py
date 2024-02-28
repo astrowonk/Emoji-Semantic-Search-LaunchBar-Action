@@ -1,10 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/local/opt/miniforge3/bin/python
 # #
 # LaunchBar Action Script
 #
 import argparse
 import json
 from EmojiFinder import EmojiFinderSql
+try:
+    from ducklive import LiveSearch
+    use_duck = True
+except ImportError:
+    use_duck = False
 from config import gender_priority, skin_tone_priority
 
 items = []
@@ -16,8 +21,12 @@ parser.add_argument('search')
 args = parser.parse_args()
 
 e = EmojiFinderSql()
+if use_duck:
+    l = LiveSearch(model_path='../Resources/minilm-v6.gguf')
 
 res = e.top_emojis(args.search)
+if not res and use_duck:
+    res = l.get_emoji(args.search)
 
 
 def make_entry(item, skin_tone, gender):
