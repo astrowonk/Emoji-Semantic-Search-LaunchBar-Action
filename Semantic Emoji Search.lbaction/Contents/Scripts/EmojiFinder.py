@@ -66,7 +66,7 @@ class EmojiFinderSql:
     def top_emojis(self, search):
         search = search.strip().lower()
         results = self.con.execute(
-            "select emoji,rank_of_search,label,text,version from combined_emoji where word = ? and version <= 14.0 and label = base_emoji order by rank_of_search;",
+            "select emoji,rank_of_search,label,text,version from combined_emoji where word = ? and version <= 15.0 and label = base_emoji order by rank_of_search;",
             (search, )).fetchall()
 
         results = [{
