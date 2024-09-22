@@ -1,4 +1,5 @@
 #!/usr/local/opt/miniforge3/bin/python
+"""you may need to edit the text above to point to your python installation of choice"""
 
 import json
 from EmojiFinder import EmojiFinderSql
@@ -12,7 +13,6 @@ except ImportError:
 from config import gender_priority, skin_tone_priority
 
 items = []
-# Note: The first argument is the script's path
 
 e = EmojiFinderSql()
 if use_duck:
